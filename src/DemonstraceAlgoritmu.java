@@ -2,7 +2,7 @@ public class DemonstraceAlgoritmu {
     private String text;
     private String vzorek;
     private enum Kroky { UVOD, VNITRNI_CYKLUS, HLAVNI_PODMINKA, PODMINKA_SPLNENI_UKOLU,
-        PODMINKA_KONEC_TEXTU, NESPLNENI_HLAVNI_PODMINKY, PODMINKA_KONEC_TEXTU2, KONEC };
+        PODMINKA_KONEC_TEXTU, NESPLNENI_HLAVNI_PODMINKY,KONEC };
     private Kroky aktualniKrok;
     private String popisKroku;
     private int pocetProvedenychKroku;
@@ -81,64 +81,93 @@ public class DemonstraceAlgoritmu {
         switch (aktualniKrok) {
             case UVOD:
                 // Logika pro úvodní krok
-                System.out.println("Začátek hledání.");
-                aktualniKrok = Kroky.VNITRNI_CYKLUS;
+                uvod();
                 break;
             case VNITRNI_CYKLUS:
                 // Logika pro vnitřní cyklus
-                System.out.println("Vnitřní cyklus: Porovnávám znaky.");
-                aktualniKrok = Kroky.HLAVNI_PODMINKA;
+                vnitrnicyklus();
                 break;
             case HLAVNI_PODMINKA:
                 // Hlavní podmínka pro hledání shodných písmenek
-                if (indexTextu < text.length() && indexVzorku < vzorek.length() &&
-                        text.charAt(indexTextu) == vzorek.charAt(indexVzorku)) {
-                    System.out.println("Znaky se shodují.");
-                    aktualniKrok = Kroky.PODMINKA_SPLNENI_UKOLU;
-                } else {
-                    System.out.println("Znaky se neshodují.");
-                    aktualniKrok = Kroky.NESPLNENI_HLAVNI_PODMINKY;
-                }
+                hlavnipodminka();
                 break;
             case PODMINKA_SPLNENI_UKOLU:
                 // Podmínka pro splnění úkolu
-                if (indexVzorku == vzorek.length() - 1) {
-                    System.out.println("Vzorek nalezen!");
-                    aktualniKrok = Kroky.KONEC;
-                } else {
-                    indexVzorku++;
-                    aktualniKrok = Kroky.HLAVNI_PODMINKA;
-                }
+                podminkasplneniukolu();
                 break;
             case PODMINKA_KONEC_TEXTU:
                 // Podmínka pro zjištění, zda text neskončil
-                if (indexTextu == text.length()) {
-                    System.out.println("Vzorek nenalezen.");
-                    aktualniKrok = Kroky.KONEC;
-                } else {
-                    indexTextu++;
-                    indexVzorku = 0;
-                    aktualniKrok = Kroky.VNITRNI_CYKLUS;
-                }
+                podminkakonectextu();
                 break;
             case NESPLNENI_HLAVNI_PODMINKY:
                 // Nesplnění hlavní podmínky
-                indexTextu++;
-                indexVzorku = 0;
-                aktualniKrok = Kroky.PODMINKA_KONEC_TEXTU;
+                nesplnenihlavnipodminky();
                 break;
             case KONEC:
-                System.out.println("Hledání dokončeno.");
+                konec();
                 break;
+
+            }
         }
+
+    private void uvod() {
+        System.out.println("Začátek hledání.");
+        aktualniKrok = Kroky.VNITRNI_CYKLUS;
+    }
+
+    private void vnitrnicyklus() {
+        System.out.println("Vnitřní cyklus: Porovnávám znaky.");
+        aktualniKrok = Kroky.HLAVNI_PODMINKA;
+    }
+
+    private void hlavnipodminka() {
+        if (indexTextu < text.length() && indexVzorku < vzorek.length() &&
+                text.charAt(indexTextu) == vzorek.charAt(indexVzorku)) {
+            System.out.println("Znak "+ getIndexTextu() +" se shoduje.");
+            aktualniKrok = Kroky.PODMINKA_SPLNENI_UKOLU;
+        } else {
+            System.out.println("Znaky "+ getIndexTextu() +" se neshodují.");
+            aktualniKrok = Kroky.NESPLNENI_HLAVNI_PODMINKY;
+        }
+    }
+
+    private void podminkasplneniukolu() {
+        if (indexVzorku == vzorek.length() -1) {
+            System.out.println("Vzorek nalezen!");
+            aktualniKrok = Kroky.KONEC;
+        } else {
+            indexVzorku += 1;
+            indexTextu += 1;
+            aktualniKrok = Kroky.HLAVNI_PODMINKA;
+        }
+    }
+
+    private void podminkakonectextu() {
+        if (indexTextu == text.length()) {
+            System.out.println("Vzorek nenalezen.");
+            aktualniKrok = Kroky.KONEC;
+        } else {
+            indexTextu += 1;
+            indexVzorku = 0;
+            aktualniKrok = Kroky.VNITRNI_CYKLUS;
+        }
+    }
+
+    private void nesplnenihlavnipodminky() {
+        indexVzorku = 0;
+        aktualniKrok = Kroky.PODMINKA_KONEC_TEXTU;
+    }
+
+    private void konec() {
+        System.out.println("Hledání dokončeno.");
     }
 
 
 
     public static void main(String[] args) {
         DemonstraceAlgoritmu demonstrace = new DemonstraceAlgoritmu();
-        demonstrace.setText("Ahoj světe!");
-        demonstrace.setVzorek("svě");
+        demonstrace.setText("Funguje to doufám");
+        demonstrace.setVzorek("to dou");
         demonstrace.naZacatek();
 
         while (demonstrace.getAktualniKrok() != Kroky.KONEC) {
